@@ -4,6 +4,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const signupForm = document.getElementById("signup-form");
   const messageDiv = document.getElementById("message");
 
+  // Helper to produce initials from a name or email
+  function getInitials(str) {
+    if (!str) return "";
+    const local = str.split("@")[0];
+    const parts = local.split(/[\.\s_-]+/).filter(Boolean);
+    if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+    return local.slice(0, 2).toUpperCase();
+  }
+
   // Function to fetch activities from API
   async function fetchActivities() {
     try {
@@ -25,9 +34,41 @@ document.addEventListener("DOMContentLoaded", () => {
           <p>${details.description}</p>
           <p><strong>Schedule:</strong> ${details.schedule}</p>
           <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
+
+          <div class="participants">
+            <h5>Participants</h5>
+            <ul class="participants-list"></ul>
+          </div>
         `;
 
         activitiesList.appendChild(activityCard);
+
+        // Populate participants list (pretty with avatars)
+        const participantsListUL = activityCard.querySelector(".participants-list");
+        if (!details.participants || details.participants.length === 0) {
+          const li = document.createElement("li");
+          const span = document.createElement("span");
+          span.className = "participant-name";
+          span.textContent = "No participants yet";
+          li.appendChild(span);
+          participantsListUL.appendChild(li);
+        } else {
+          details.participants.forEach((p) => {
+            const li = document.createElement("li");
+
+            const avatar = document.createElement("span");
+            avatar.className = "avatar";
+            avatar.textContent = getInitials(p);
+
+            const nameSpan = document.createElement("span");
+            nameSpan.className = "participant-name";
+            nameSpan.textContent = p;
+
+            li.appendChild(avatar);
+            li.appendChild(nameSpan);
+            participantsListUL.appendChild(li);
+          });
+        }
 
         // Add option to select dropdown
         const option = document.createElement("option");
