@@ -105,3 +105,23 @@ def signup_for_activity(activity_name: str, email: str):
     # Validate student is not already signed up
     if email in activity["participants"]:
         raise HTTPException(status_code=400, detail="Student already signed up")
+
+
+@app.delete("/activities/{activity_name}/participant")
+def remove_participant(activity_name: str, email: str):
+    """Unregister a student from an activity"""
+    if activity_name not in activities:
+        raise HTTPException(status_code=404, detail="Activity not found")
+
+    activity = activities[activity_name]
+
+    if email not in activity.get("participants", []):
+        raise HTTPException(status_code=404, detail="Participant not found in activity")
+
+    # Remove participant
+    try:
+        activity["participants"].remove(email)
+    except ValueError:
+        raise HTTPException(status_code=500, detail="Failed to remove participant")
+
+    return {"message": f"Removed {email} from {activity_name}"}

@@ -195,3 +195,21 @@ footer {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.delete-btn {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  color: #c62828;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 4px 6px;
+  border-radius: 4px;
+}
+
+.delete-btn:hover {
+  color: #b71c1c;
+  background-color: rgba(198,40,40,0.06);
+}
